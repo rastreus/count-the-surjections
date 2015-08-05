@@ -16,7 +16,7 @@ along with surjections. If not, see <http://www.gnu.org/licenses/>. -}
 c :: Int -> Int -> Int
 c n i
     | i == 0 || n == 0 || i == n = 1
-    | i  > 0 && i  < n           = c (n-1) (i-1) + (c (n-1) i)
+    | i  > 0 && i  < n           = c (n-1) (i-1) + c (n-1) i
 
 e :: Int -> Int -> Int -> Int
 e n m i = e' n m i 0
@@ -24,12 +24,11 @@ e n m i = e' n m i 0
 e' :: Int -> Int -> Int -> Int -> Int
 e' n m i w
     | i > (n-1) = w
-    | otherwise = e' n m (i+1) (w + (\x y z -> (c x z) * (s y z)) n m i)
+    | otherwise = e' n m (i+1) (w + (\x y z -> c x z * s y z) n m i)
 
 s :: Int -> Int -> Int
 s m n
     | n == 1          = 1
     | m  < n          = 0
-    | m == n          = (\x -> foldl (*) 1 [1..x]) m
-    | n  > 1 && m > n = (n^m) - (e n m 1)
-    
+    | m == n          = (\x -> product [1..x]) m
+    | n  > 1 && m > n = (n ^ m) - e n m 1
